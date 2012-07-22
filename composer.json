@@ -1,0 +1,28 @@
+{
+    "name":         "mmbechezi/browser",
+    "type":         "library",
+    "description":  "Detecting the user’s browser",
+    "keywords":     ["browser"],
+    "homepage":     "http://www.ikimea.com",
+    "license":      "GPL",
+    "authors":      [
+        {
+            "name":     "Ikimea",
+            "homepage": "http://www.ikimea.com"
+        },
+        {
+            "name":     "Chris Schuld",
+            "homepage": "http://chrisschuld.com"
+        },
+        {
+           "name":      "Gary White",
+           "homepage":  " http://apptools.com/phptools/browser/"
+        }
+    ],
+    "require":      {
+        "php":  ">=5.3.0"
+    },
+    "autoload":     {
+        "psr-0": { "Ikimea\\Browser\\": "src/" }
+    }
+}
