@@ -1,5 +1,5 @@
 {
-    "name":         "mmbechezi/browser",
+    "name":         "ikimea/browser",
     "type":         "library",
     "description":  "Detecting the user’s browser",
     "keywords":     ["browser"],
