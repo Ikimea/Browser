@@ -6,7 +6,7 @@ Typical Usage:
 ```php
 <?php
 
-use Ikimea\Browser
+use Ikimea\Browser\Browser
 
   $browser = new Browser();
   if( $browser->getBrowser() == Browser::BROWSER_FIREFOX && $browser->getVersion() >= 2 ) {
