@@ -1,4 +1,8 @@
 * UPDATES:
+     *
+	 * 2013-08-18 (v1.10):
+	 *  + Fixing Opera Browser version (Thanks PWalkow)
+	 *  + Change LICENSE GPL to MIT
 	 *
 	 * 2010-08-20 (v1.9):
 	 *  + Added MSN Explorer Browser (legacy)
