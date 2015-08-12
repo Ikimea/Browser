@@ -27,6 +27,7 @@ class Browser
     const BROWSER_OPERA_MINI = 'Opera Mini'; // http://www.opera.com/mini/
     const BROWSER_WEBTV = 'WebTV'; // http://www.webtv.net/pc/
     const BROWSER_IE = 'Internet Explorer'; // http://www.microsoft.com/ie/
+    const BROWSER_EDGE = 'Edge'; // https://www.microsoft.com/en-us/windows/microsoft-edge
     const BROWSER_POCKET_IE = 'Pocket Internet Explorer'; // http://en.wikipedia.org/wiki/Internet_Explorer_Mobile
     const BROWSER_KONQUEROR = 'Konqueror'; // http://www.konqueror.org/
     const BROWSER_ICAB = 'iCab'; // http://www.icab.de/
@@ -338,6 +339,7 @@ class Browser
             //     before FireFox are necessary
             $this->checkBrowserWebTv() ||
             $this->checkBrowserInternetExplorer() ||
+            $this->checkBrowserEdge() ||
             $this->checkBrowserOpera() ||
             $this->checkBrowserGaleon() ||
             $this->checkBrowserNetscapeNavigator9Plus() ||
@@ -559,6 +561,26 @@ class Browser
             }
 
             return true;
+        }
+
+        return false;
+    }
+
+ /**
+     * Determine if the browser is Microsoft Edge or not
+     *
+     * @return bool True if the browser is Edge otherwise false
+     */
+    protected function checkBrowserEdge()
+    {
+        if (stripos($this->_agent, 'edge') !== false) {
+            $aresult = explode('/', stristr($this->_agent, 'Edge'));
+            $aversion = explode(' ', $aresult[1]);
+            $this->setVersion($aversion[0]);
+            $this->setBrowser(self::BROWSER_EDGE);
+
+            return true;
+
         }
 
         return false;
