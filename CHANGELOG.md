@@ -1,8 +1,14 @@
 CHANGELOG for 1.x
 ===================
 
+ * 1.13.0  (2016-11-21)
+
+    * Added Windows Phone platform
+    * Added Internet explorer 11 touch support
+    * Fix Mobile detection
+
  * 1.12.0  (2015-08-26)
- 
+
     * Added Microsoft Edge support
     * PHP 5.3 Support
 
@@ -26,7 +32,8 @@ CHANGELOG for 1.x
  
     *  Added iPad Support
 
- * 1.7.0 (2010-03-07) 
+ * 1.7.0 (2010-03-07)
+
      *  *MAJOR* Rebuild (preg_match and other "slow" routine removal(s))
      *  Almost allof Gary's original code has been replaced
      *  Large PHPUNIT testing environment created to validate new releases and additions
