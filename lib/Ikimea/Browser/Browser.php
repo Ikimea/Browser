@@ -79,6 +79,7 @@ class Browser
     const PLATFORM_SUNOS = 'SunOS';
     const PLATFORM_OPENSOLARIS = 'OpenSolaris';
     const PLATFORM_ANDROID = 'Android';
+    const PLATFORM_WINDOWSPHONE = 'Windows Phone';
 
     const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
@@ -1124,6 +1125,9 @@ class Browser
             $this->setMobile(true);
         } elseif (stripos($this->_agent, 'BlackBerry') !== false) {
             $this->_platform = self::PLATFORM_BLACKBERRY;
+            $this->setMobile(true);
+        } elseif (stripos($this->_agent, 'Windows Phone') !== false) {
+            $this->_platform = self::PLATFORM_WINDOWSPHONE;
             $this->setMobile(true);
         } elseif (stripos($this->_agent, 'FreeBSD') !== false) {
             $this->_platform = self::PLATFORM_FREEBSD;
