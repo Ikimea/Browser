@@ -79,6 +79,7 @@ class Browser
     const PLATFORM_SUNOS = 'SunOS';
     const PLATFORM_OPENSOLARIS = 'OpenSolaris';
     const PLATFORM_ANDROID = 'Android';
+    const PLATFORM_WINDOWSPHONE = 'Windows Phone';
 
     const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
@@ -390,7 +391,6 @@ class Browser
             $aversion = explode(' ', $aresult[1]);
             $this->setVersion($aversion[0]);
             $this->_browser_name = self::BROWSER_BLACKBERRY;
-            $this->setMobile(true);
 
             return true;
         }
@@ -551,7 +551,6 @@ class Browser
             $aresult = explode(' ', stristr($this->_agent, 'mspie'));
             $this->setPlatform(self::PLATFORM_WINDOWS_CE);
             $this->setBrowser(self::BROWSER_POCKET_IE);
-            $this->setMobile(true);
 
             if (stripos($this->_agent, 'mspie') !== false) {
                 $this->setVersion($aresult[1]);
@@ -604,7 +603,6 @@ class Browser
                 $this->setVersion($aversion[1]);
             }
             $this->_browser_name = self::BROWSER_OPERA_MINI;
-            $this->setMobile(true);
 
             return true;
         } elseif (stripos($this->_agent, 'opera') !== false) {
@@ -866,7 +864,6 @@ class Browser
             } else {
                 $this->setBrowser(self::BROWSER_NOKIA);
             }
-            $this->setMobile(true);
 
             return true;
         }
@@ -1023,7 +1020,6 @@ class Browser
             } else {
                 $this->setVersion(self::VERSION_UNKNOWN);
             }
-            $this->setMobile(true);
             $this->setBrowser(self::BROWSER_IPHONE);
 
             return true;
@@ -1047,7 +1043,6 @@ class Browser
             } else {
                 $this->setVersion(self::VERSION_UNKNOWN);
             }
-            $this->setMobile(true);
             $this->setBrowser(self::BROWSER_IPAD);
 
             return true;
@@ -1071,7 +1066,6 @@ class Browser
             } else {
                 $this->setVersion(self::VERSION_UNKNOWN);
             }
-            $this->setMobile(true);
             $this->setBrowser(self::BROWSER_IPOD);
 
             return true;
@@ -1095,7 +1089,6 @@ class Browser
             } else {
                 $this->setVersion(self::VERSION_UNKNOWN);
             }
-            $this->setMobile(true);
             $this->setBrowser(self::BROWSER_ANDROID);
 
             return true;
@@ -1113,20 +1106,29 @@ class Browser
             $this->_platform = self::PLATFORM_WINDOWS;
         } elseif (stripos($this->_agent, 'iPad') !== false) {
             $this->_platform = self::PLATFORM_IPAD;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'iPod') !== false) {
             $this->_platform = self::PLATFORM_IPOD;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'iPhone') !== false) {
             $this->_platform = self::PLATFORM_IPHONE;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'mac') !== false) {
             $this->_platform = self::PLATFORM_APPLE;
         } elseif (stripos($this->_agent, 'android') !== false) {
             $this->_platform = self::PLATFORM_ANDROID;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'linux') !== false) {
             $this->_platform = self::PLATFORM_LINUX;
         } elseif (stripos($this->_agent, 'Nokia') !== false) {
             $this->_platform = self::PLATFORM_NOKIA;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'BlackBerry') !== false) {
             $this->_platform = self::PLATFORM_BLACKBERRY;
+            $this->setMobile(true);
+        } elseif (stripos($this->_agent, 'Windows Phone') !== false) {
+            $this->_platform = self::PLATFORM_WINDOWSPHONE;
+            $this->setMobile(true);
         } elseif (stripos($this->_agent, 'FreeBSD') !== false) {
             $this->_platform = self::PLATFORM_FREEBSD;
         } elseif (stripos($this->_agent, 'OpenBSD') !== false) {
