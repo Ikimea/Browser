@@ -1102,9 +1102,7 @@ class Browser
      */
     protected function checkPlatform()
     {
-        if (stripos($this->_agent, 'windows') !== false) {
-            $this->_platform = self::PLATFORM_WINDOWS;
-        } elseif (stripos($this->_agent, 'iPad') !== false) {
+        if (stripos($this->_agent, 'iPad') !== false) {
             $this->_platform = self::PLATFORM_IPAD;
             $this->setMobile(true);
         } elseif (stripos($this->_agent, 'iPod') !== false) {
@@ -1129,6 +1127,8 @@ class Browser
         } elseif (stripos($this->_agent, 'Windows Phone') !== false) {
             $this->_platform = self::PLATFORM_WINDOWSPHONE;
             $this->setMobile(true);
+        } elseif (stripos($this->_agent, 'windows') !== false) {
+            $this->_platform = self::PLATFORM_WINDOWS;
         } elseif (stripos($this->_agent, 'FreeBSD') !== false) {
             $this->_platform = self::PLATFORM_FREEBSD;
         } elseif (stripos($this->_agent, 'OpenBSD') !== false) {
