@@ -182,6 +182,19 @@ class Browser
     }
 
     /**
+     * Return the Major version of the browser (Chrome 55.0.2883 => 55). If it
+     * can't properly parse the Major version from the version (e.g. There are
+     * alphabetical-characters in the version string) it will just return the
+     * full version.
+     *
+     * @return string Major version of the Browser.
+     */
+    public function getMajorVersion()
+    {
+        return (floor($this->_version) ?: $this->_version);
+    }
+
+    /**
      * The version of AOL.
      *
      * @return string Version of AOL (will only contain alpha-numeric characters and a period)
