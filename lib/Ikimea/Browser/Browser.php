@@ -25,6 +25,7 @@ class Browser
 
     const BROWSER_OPERA = 'Opera'; // http://www.opera.com/
     const BROWSER_OPERA_MINI = 'Opera Mini'; // http://www.opera.com/mini/
+    const BROWSER_OPERA_CHROMIUM = 'Opera Chromium'; // http://www.opera.com/
     const BROWSER_WEBTV = 'WebTV'; // http://www.webtv.net/pc/
     const BROWSER_IE = 'Internet Explorer'; // http://www.microsoft.com/ie/
     const BROWSER_EDGE = 'Edge'; // https://www.microsoft.com/en-us/windows/microsoft-edge
@@ -633,6 +634,14 @@ class Browser
             $this->_browser_name = self::BROWSER_OPERA;
 
             return true;
+        } elseif (stripos($this->_agent, 'OPR') !== false) {
+            $aresult = explode('/', stristr($this->_agent, 'OPR'));
+            $aversion = explode(' ', $aresult[1]);
+            $this->setVersion($aversion[0]);
+            $this->setBrowser(self::BROWSER_OPERA_CHROMIUM);
+
+            return true;
+
         }
 
         return false;
