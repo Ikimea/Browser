@@ -23,6 +23,7 @@ class Browser
     const BROWSER_UNKNOWN = 'unknown';
     const VERSION_UNKNOWN = 'unknown';
 
+    const BROWSER_YANDEX = "Yandex Browser"; // http://browser.yandex.ru/
     const BROWSER_OPERA = 'Opera'; // http://www.opera.com/
     const BROWSER_OPERA_MINI = 'Opera Mini'; // http://www.opera.com/mini/
     const BROWSER_OPERA_CHROMIUM = 'Opera Chromium'; // http://www.opera.com/
@@ -353,6 +354,7 @@ class Browser
             // (5) Netscape 9+ is based on Firefox so Netscape checks
             //     before FireFox are necessary
             $this->checkBrowserWebTv() ||
+            $this->checkBrowserYandex() ||
             $this->checkBrowserInternetExplorer() ||
             $this->checkBrowserEdge() ||
             $this->checkBrowserOpera() ||
@@ -391,6 +393,25 @@ class Browser
             $this->checkBrowserW3CValidator() ||
             $this->checkBrowserMozilla() /* Mozilla is such an open standard that you must check it last */
         );
+    }
+
+    /**
+     * Determine if the browser is Yandex browser or not.
+     *
+     * @return bool True if the browser is Yandex otherwise false
+     */
+    protected function checkBrowserYandex()
+    {
+        if (stripos($this->_agent, 'YaBrowser') !== false) {
+            $aresult = explode('/', stristr($this->_agent, 'YaBrowser'));
+            $aversion = explode(' ', $aresult[1]);
+            $this->setVersion($aversion[0]);
+            $this->setBrowser(self::BROWSER_YANDEX);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
