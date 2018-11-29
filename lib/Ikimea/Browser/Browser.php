@@ -657,6 +657,11 @@ class Browser
             return true;
         } elseif (stripos($this->_agent, 'OPR') !== false) {
             $aresult = explode('/', stristr($this->_agent, 'OPR'));
+
+            if (empty($aresult[1])) {
+                return false;
+            }
+            
             $aversion = explode(' ', $aresult[1]);
             $this->setVersion($aversion[0]);
             $this->setBrowser(self::BROWSER_OPERA_CHROMIUM);
