@@ -446,7 +446,7 @@ class Browser
         if (stripos($this->_agent, 'aol') !== false) {
             $aversion = explode(' ', stristr($this->_agent, 'AOL'));
             $this->setAol(true);
-            $this->setAolVersion(preg_replace('/[^0-9\.a-z]/i', '', $aversion[1]));
+            $this->setAolVersion(preg_replace('/[^0-9\.a-z]/i', '', isset($aversion[1]) ? $aversion[1] : ''));
 
             return true;
         }
