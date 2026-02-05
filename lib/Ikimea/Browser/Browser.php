@@ -62,6 +62,7 @@ class Browser
     const BROWSER_GALEON = 'Galeon'; // http://galeon.sourceforge.net/ (DEPRECATED)
     const BROWSER_NETPOSITIVE = 'NetPositive'; // http://en.wikipedia.org/wiki/NetPositive (DEPRECATED)
     const BROWSER_PHOENIX = 'Phoenix'; // http://en.wikipedia.org/wiki/History_of_Mozilla_Firefox (DEPRECATED)
+    const BROWSER_FACEBOOK = 'Facebook'; // https://www.facebook.com/
 
     const PLATFORM_UNKNOWN = 'unknown';
     const PLATFORM_WINDOWS = 'Windows';
@@ -364,6 +365,9 @@ class Browser
             $this->checkBrowserFirefox() ||
             $this->checkBrowserChrome() ||
             $this->checkBrowserOmniWeb() ||
+
+            // in-app browsers
+            $this->checkBrowserFacebook() ||
 
             // common mobile
             $this->checkBrowserAndroid() ||
@@ -686,6 +690,28 @@ class Browser
             $aversion = explode(' ', $aresult[1]);
             $this->setVersion($aversion[0]);
             $this->setBrowser(self::BROWSER_CHROME);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the browser is the Facebook in-app browser or not.
+     *
+     * @return bool True if the browser is Facebook otherwise false
+     */
+    protected function checkBrowserFacebook()
+    {
+        if (stripos($this->_agent, 'FBAN') !== false || stripos($this->_agent, 'FBAV') !== false) {
+            if (preg_match('/FBAV\/([^ ;)]+)/i', $this->_agent, $matches)) {
+                $this->setVersion($matches[1]);
+            } else {
+                $this->setVersion(self::VERSION_UNKNOWN);
+            }
+            $this->setBrowser(self::BROWSER_FACEBOOK);
+            $this->setMobile(true);
 
             return true;
         }
