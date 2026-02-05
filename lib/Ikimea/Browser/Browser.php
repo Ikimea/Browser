@@ -1061,13 +1061,7 @@ class Browser
     protected function checkBrowseriPhone()
     {
         if (stripos($this->_agent, 'iPhone') !== false) {
-            $aresult = explode('/', stristr($this->_agent, 'Version'));
-            if (isset($aresult[1])) {
-                $aversion = explode(' ', $aresult[1]);
-                $this->setVersion($aversion[0]);
-            } else {
-                $this->setVersion(self::VERSION_UNKNOWN);
-            }
+            $this->setVersion($this->getIOSBrowserVersion());
             $this->setBrowser(self::BROWSER_IPHONE);
 
             return true;
@@ -1084,13 +1078,7 @@ class Browser
     protected function checkBrowseriPad()
     {
         if (stripos($this->_agent, 'iPad') !== false) {
-            $aresult = explode('/', stristr($this->_agent, 'Version'));
-            if (isset($aresult[1])) {
-                $aversion = explode(' ', $aresult[1]);
-                $this->setVersion($aversion[0]);
-            } else {
-                $this->setVersion(self::VERSION_UNKNOWN);
-            }
+            $this->setVersion($this->getIOSBrowserVersion());
             $this->setBrowser(self::BROWSER_IPAD);
 
             return true;
@@ -1107,13 +1095,7 @@ class Browser
     protected function checkBrowseriPod()
     {
         if (stripos($this->_agent, 'iPod') !== false) {
-            $aresult = explode('/', stristr($this->_agent, 'Version'));
-            if (isset($aresult[1])) {
-                $aversion = explode(' ', $aresult[1]);
-                $this->setVersion($aversion[0]);
-            } else {
-                $this->setVersion(self::VERSION_UNKNOWN);
-            }
+            $this->setVersion($this->getIOSBrowserVersion());
             $this->setBrowser(self::BROWSER_IPOD);
 
             return true;
@@ -1143,6 +1125,33 @@ class Browser
         }
 
         return false;
+    }
+
+    /**
+     * Extract the browser version from an iOS user agent string.
+     * Handles CriOS (Chrome), FxiOS (Firefox), Version (Safari) and fallback.
+     *
+     * @return string The browser version or VERSION_UNKNOWN
+     */
+    protected function getIOSBrowserVersion()
+    {
+        // Chrome on iOS
+        if (preg_match('/CriOS\/([^ ]+)/i', $this->_agent, $matches)) {
+            return $matches[1];
+        }
+        // Firefox on iOS
+        if (preg_match('/FxiOS\/([^ ]+)/i', $this->_agent, $matches)) {
+            return $matches[1];
+        }
+        // Safari (native)
+        $aresult = explode('/', stristr($this->_agent, 'Version'));
+        if (isset($aresult[1])) {
+            $aversion = explode(' ', $aresult[1]);
+
+            return $aversion[0];
+        }
+
+        return self::VERSION_UNKNOWN;
     }
 
     /**
