@@ -82,6 +82,7 @@ class Browser
     const PLATFORM_OPENSOLARIS = 'OpenSolaris';
     const PLATFORM_ANDROID = 'Android';
     const PLATFORM_WINDOWSPHONE = 'Windows Phone';
+    const PLATFORM_UBUNTU = 'Ubuntu';
 
     const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
@@ -1173,6 +1174,8 @@ class Browser
         } elseif (stripos($this->_agent, 'android') !== false) {
             $this->_platform = self::PLATFORM_ANDROID;
             $this->setMobile(true);
+        } elseif (stripos($this->_agent, 'Ubuntu') !== false) {
+            $this->_platform = self::PLATFORM_UBUNTU;
         } elseif (stripos($this->_agent, 'linux') !== false) {
             $this->_platform = self::PLATFORM_LINUX;
         } elseif (stripos($this->_agent, 'Nokia') !== false) {
