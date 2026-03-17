@@ -17,6 +17,7 @@ final class PlatformDetector
             str_contains($ua, 'blackberry') => [PlatformType::BlackBerry, true],
             str_contains($ua, 'nokia') => [PlatformType::Nokia, true],
             str_contains($ua, 'mac') => [PlatformType::Mac, false],
+            str_contains($ua, 'cros') => [PlatformType::ChromeOS, false],
             str_contains($ua, 'ubuntu') => [PlatformType::Ubuntu, false],
             str_contains($ua, 'linux') => [PlatformType::Linux, false],
             str_contains($ua, 'windows') => [PlatformType::Windows, false],

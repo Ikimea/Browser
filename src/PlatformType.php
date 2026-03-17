@@ -6,7 +6,6 @@ enum PlatformType: string
 {
     case Unknown = 'unknown';
     case Windows = 'Windows';
-    case WindowsCE = 'Windows CE';
     case WindowsPhone = 'Windows Phone';
     case Mac = 'mac';
     case Linux = 'Linux';
@@ -22,4 +21,5 @@ enum PlatformType: string
     case NetBSD = 'NetBSD';
     case SunOS = 'SunOS';
     case OpenSolaris = 'OpenSolaris';
+    case ChromeOS = 'ChromeOS';
 }
