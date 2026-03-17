@@ -98,5 +98,29 @@ final class PlatformDetectorTest extends TestCase
             PlatformType::Unknown,
             false,
         ];
+
+        yield 'Empty UA' => [
+            '',
+            PlatformType::Unknown,
+            false,
+        ];
+
+        yield 'Nokia' => [
+            'Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 Nokia5230/51.0.002; Profile/MIDP-2.1 Configuration/CLDC-1.1) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.1.26 Mobile Safari/533.4',
+            PlatformType::Nokia,
+            true,
+        ];
+
+        yield 'OpenBSD' => [
+            'Mozilla/5.0 (X11; OpenBSD amd64; rv:102.0) Gecko/20100101 Firefox/102.0',
+            PlatformType::OpenBSD,
+            false,
+        ];
+
+        yield 'NetBSD' => [
+            'Mozilla/5.0 (X11; NetBSD amd64; rv:102.0) Gecko/20100101 Firefox/102.0',
+            PlatformType::NetBSD,
+            false,
+        ];
     }
 }

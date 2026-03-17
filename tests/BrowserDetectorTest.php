@@ -118,6 +118,66 @@ final class BrowserDetectorTest extends TestCase
             BrowserType::Unknown,
             '',
         ];
+
+        yield 'Empty UA' => [
+            '',
+            BrowserType::Unknown,
+            '',
+        ];
+
+        yield 'Opera classic' => [
+            'Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.18',
+            BrowserType::Opera,
+            '12.',
+        ];
+
+        yield 'Opera Mini' => [
+            'Opera/9.80 (J2ME/MIDP; Opera Mini/5.0/28.3590; U; en) Presto/2.8.119 Version/11.10',
+            BrowserType::OperaMini,
+            '5.',
+        ];
+
+        yield 'Edge legacy' => [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763',
+            BrowserType::Edge,
+            '18.',
+        ];
+
+        yield 'iPod Safari' => [
+            'Mozilla/5.0 (iPod; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1',
+            BrowserType::iPod,
+            '14.',
+        ];
+
+        yield 'BlackBerry' => [
+            'Mozilla/5.0 (BlackBerry; U; BlackBerry 9900; en) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.1.0.346 Mobile Safari/534.11+',
+            BrowserType::BlackBerry,
+            '',
+        ];
+
+        yield 'Yahoo Slurp' => [
+            'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)',
+            BrowserType::Slurp,
+            '',
+        ];
+
+        yield 'Lynx' => [
+            'Lynx/2.8.9rel.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/3.6.5',
+            BrowserType::Lynx,
+            '2.',
+        ];
+
+        yield 'Facebook FBAN only' => [
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS]',
+            BrowserType::Facebook,
+            '',
+        ];
+
+        yield 'Truncated UA' => [
+            'Mozilla/5.0',
+            BrowserType::Mozilla,
+            '',
+        ];
     }
 
     public function testIsRobot(): void
