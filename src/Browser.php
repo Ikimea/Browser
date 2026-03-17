@@ -13,17 +13,17 @@ final class Browser
         $browserDetector = new BrowserDetector();
 
         $platformResult = $platformDetector->detect($ua);
-        [$browser, $version, $isRobot] = $browserDetector->detect($ua);
+        $browserMatch = $browserDetector->detect($ua);
 
-        $version = preg_replace('/[^0-9.,a-zA-Z-]/', '', $version);
+        $version = preg_replace('/[^0-9.,a-zA-Z-]/', '', $browserMatch->version) ?? '';
 
         $this->result = new BrowserResult(
             userAgent: $ua,
-            browser: $browser,
+            browser: $browserMatch->browser,
             version: $version,
             platform: $platformResult->platform,
             isMobile: $platformResult->isMobile,
-            isRobot: $isRobot,
+            isRobot: $browserMatch->isRobot,
         );
     }
 

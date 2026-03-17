@@ -4,7 +4,7 @@ namespace Ikimea\Browser;
 
 final class BrowserDetector
 {
-    public function detect(string $userAgent): array
+    public function detect(string $userAgent): BrowserMatch
     {
         return $this->checkYandex($userAgent)
             ?? $this->checkEdge($userAgent)
@@ -36,52 +36,55 @@ final class BrowserDetector
             ?? $this->checkIceweasel($userAgent)
             ?? $this->checkW3CValidator($userAgent)
             ?? $this->checkMozilla($userAgent)
-            ?? [BrowserType::Unknown, 'unknown', false];
+            ?? new BrowserMatch(BrowserType::Unknown, 'unknown');
     }
 
-    /** @return array{BrowserType, string, bool}|null — [type, version, isRobot] */
-    private function checkYandex(string $ua): ?array
+    private function versionAfter(string $ua, string $token): string
+    {
+        $fragment = stristr($ua, $token);
+        if ($fragment === false) {
+            return 'unknown';
+        }
+        $parts = explode('/', $fragment);
+
+        return isset($parts[1]) ? explode(' ', $parts[1])[0] : 'unknown';
+    }
+
+    private function checkYandex(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'YaBrowser') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'YaBrowser'));
-        $version = explode(' ', $parts[1])[0];
 
-        return [BrowserType::Yandex, $version, false];
+        return new BrowserMatch(BrowserType::Yandex, $this->versionAfter($ua, 'YaBrowser'));
     }
 
-    private function checkEdge(string $ua): ?array
+    private function checkEdge(string $ua): ?BrowserMatch
     {
-        if (stripos($ua, 'Edge') === false && stripos($ua, 'Edg/') === false) {
+        if (stripos($ua, 'Edg') === false) {
             return null;
         }
-        if (stripos($ua, 'Edge') !== false) {
-            $parts = explode('/', stristr($ua, 'Edge'));
-        } else {
-            $parts = explode('/', stristr($ua, 'Edg'));
-        }
-        $version = explode(' ', $parts[1] ?? '')[0];
+        $token = stripos($ua, 'Edge/') !== false ? 'Edge' : 'Edg';
 
-        return [BrowserType::Edge, $version, false];
+        return new BrowserMatch(BrowserType::Edge, $this->versionAfter($ua, $token));
     }
 
-    private function checkIE(string $ua): ?array
+    private function checkIE(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Trident/7.0') !== false && stripos($ua, 'rv:11.0') !== false) {
-            return [BrowserType::IE, '11.0', false];
+            return new BrowserMatch(BrowserType::IE, '11.0');
         }
         if (stripos($ua, 'msie') !== false && stripos($ua, 'opera') === false) {
             if (stripos($ua, 'msnb') !== false) {
                 $parts = explode(' ', stristr(str_replace(';', '; ', $ua), 'MSN'));
                 $version = str_replace(['(', ')', ';'], '', $parts[1]);
 
-                return [BrowserType::MSN, $version, false];
+                return new BrowserMatch(BrowserType::MSN, $version);
             }
             $parts = explode(' ', stristr(str_replace(';', '; ', $ua), 'msie'));
             $version = str_replace(['(', ')', ';'], '', $parts[1]);
 
-            return [BrowserType::IE, $version, false];
+            return new BrowserMatch(BrowserType::IE, $version);
         }
         if (stripos($ua, 'mspie') !== false || stripos($ua, 'pocket') !== false) {
             if (stripos($ua, 'mspie') !== false) {
@@ -92,171 +95,164 @@ final class BrowserDetector
                 $version = $parts[1] ?? 'unknown';
             }
 
-            return [BrowserType::PocketIE, $version, false];
+            return new BrowserMatch(BrowserType::PocketIE, $version);
         }
 
         return null;
     }
 
-    private function checkOperaMini(string $ua): ?array
+    private function checkOperaMini(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'opera mini') === false) {
             return null;
         }
         $resultant = stristr($ua, 'opera mini');
-        if (preg_match('/\//', $resultant)) {
+        if ($resultant !== false && str_contains($resultant, '/')) {
             $parts = explode('/', $resultant);
             $version = explode(' ', $parts[1])[0];
         } else {
-            $parts = explode(' ', stristr($resultant, 'opera mini'));
-            $version = $parts[1] ?? 'unknown';
+            $parts = explode(' ', $resultant ?: '');
+            $version = $parts[2] ?? 'unknown';
         }
 
-        return [BrowserType::OperaMini, $version, false];
+        return new BrowserMatch(BrowserType::OperaMini, $version);
     }
 
-    private function checkOpera(string $ua): ?array
+    private function checkOpera(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'opera') === false) {
             return null;
         }
         $resultant = stristr($ua, 'opera');
-        if (preg_match('/Version\/([0-9]*\.[0-9]*)$/', $resultant, $matches)) {
+        if ($resultant !== false && preg_match('/Version\/([0-9]*\.[0-9]*)$/', $resultant, $matches)) {
             $version = $matches[1];
-        } elseif (preg_match('/\//', $resultant)) {
+        } elseif ($resultant !== false && str_contains($resultant, '/')) {
             $parts = explode('/', str_replace('(', ' ', $resultant));
             $version = explode(' ', $parts[1])[0];
         } else {
-            $parts = explode(' ', stristr($resultant, 'opera'));
+            $parts = explode(' ', $resultant ?: '');
             $version = $parts[1] ?? '';
         }
 
-        return [BrowserType::Opera, $version, false];
+        return new BrowserMatch(BrowserType::Opera, $version);
     }
 
-    private function checkOPR(string $ua): ?array
+    private function checkOPR(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'OPR') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'OPR'));
-        if (empty($parts[1])) {
+        $version = $this->versionAfter($ua, 'OPR');
+        if ($version === 'unknown') {
             return null;
         }
-        $version = explode(' ', $parts[1])[0];
 
-        return [BrowserType::OperaChromium, $version, false];
+        return new BrowserMatch(BrowserType::OperaChromium, $version);
     }
 
-    private function checkNetscapeNavigator(string $ua): ?array
+    private function checkNetscapeNavigator(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Firefox') !== false && preg_match('/Navigator\/([^ ]*)/i', $ua, $matches)) {
-            return [BrowserType::NetscapeNavigator, $matches[1], false];
+            return new BrowserMatch(BrowserType::NetscapeNavigator, $matches[1]);
         }
         if (stripos($ua, 'Firefox') === false && preg_match('/Netscape6?\/([^ ]*)/i', $ua, $matches)) {
-            return [BrowserType::NetscapeNavigator, $matches[1], false];
+            return new BrowserMatch(BrowserType::NetscapeNavigator, $matches[1]);
         }
 
         return null;
     }
 
-    private function checkFirefox(string $ua): ?array
+    private function checkFirefox(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'safari') !== false) {
             return null;
         }
         if (preg_match('/Firefox[\/ \(]([^ ;\)]+)/i', $ua, $matches)) {
-            return [BrowserType::Firefox, $matches[1], false];
+            return new BrowserMatch(BrowserType::Firefox, $matches[1]);
         }
         if (preg_match('/Firefox$/i', $ua)) {
-            return [BrowserType::Firefox, '', false];
+            return new BrowserMatch(BrowserType::Firefox, '');
         }
 
         return null;
     }
 
-    private function checkChrome(string $ua): ?array
+    private function checkChrome(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Chrome') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Chrome'));
-        $version = explode(' ', $parts[1])[0];
 
-        return [BrowserType::Chrome, $version, false];
+        return new BrowserMatch(BrowserType::Chrome, $this->versionAfter($ua, 'Chrome'));
     }
 
-    private function checkOmniWeb(string $ua): ?array
+    private function checkOmniWeb(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'omniweb') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'omniweb'));
-        $version = explode(' ', $parts[1] ?? '')[0];
 
-        return [BrowserType::OmniWeb, $version, false];
+        return new BrowserMatch(BrowserType::OmniWeb, $this->versionAfter($ua, 'omniweb'));
     }
 
-    private function checkFacebook(string $ua): ?array
+    private function checkFacebook(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'FBAN') === false && stripos($ua, 'FBAV') === false) {
             return null;
         }
         $version = preg_match('/FBAV\/([^ ;)]+)/i', $ua, $matches) ? $matches[1] : 'unknown';
 
-        return [BrowserType::Facebook, $version, false];
+        return new BrowserMatch(BrowserType::Facebook, $version);
     }
 
-    private function checkAndroid(string $ua): ?array
+    private function checkAndroid(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Android') === false) {
             return null;
         }
-        $parts = explode(' ', stristr($ua, 'Android'));
+        $parts = explode(' ', stristr($ua, 'Android') ?: '');
         $version = isset($parts[1]) ? explode(' ', $parts[1])[0] : 'unknown';
 
-        return [BrowserType::Android, $version, false];
+        return new BrowserMatch(BrowserType::Android, $version);
     }
 
-    private function checkiPad(string $ua): ?array
+    private function checkiPad(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'iPad') === false) {
             return null;
         }
 
-        return [BrowserType::iPad, $this->getIOSBrowserVersion($ua), false];
+        return new BrowserMatch(BrowserType::iPad, $this->getIOSBrowserVersion($ua));
     }
 
-    private function checkiPod(string $ua): ?array
+    private function checkiPod(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'iPod') === false) {
             return null;
         }
 
-        return [BrowserType::iPod, $this->getIOSBrowserVersion($ua), false];
+        return new BrowserMatch(BrowserType::iPod, $this->getIOSBrowserVersion($ua));
     }
 
-    private function checkiPhone(string $ua): ?array
+    private function checkiPhone(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'iPhone') === false) {
             return null;
         }
 
-        return [BrowserType::iPhone, $this->getIOSBrowserVersion($ua), false];
+        return new BrowserMatch(BrowserType::iPhone, $this->getIOSBrowserVersion($ua));
     }
 
-    private function checkBlackBerry(string $ua): ?array
+    private function checkBlackBerry(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'blackberry') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'BlackBerry'));
-        $version = explode(' ', $parts[1] ?? 'unknown')[0];
 
-        return [BrowserType::BlackBerry, $version, false];
+        return new BrowserMatch(BrowserType::BlackBerry, $this->versionAfter($ua, 'blackberry'));
     }
 
-    private function checkNokia(string $ua): ?array
+    private function checkNokia(string $ua): ?BrowserMatch
     {
         if (!preg_match('/Nokia([^\/]+)\/([^ SP]+)/i', $ua, $matches)) {
             return null;
@@ -265,157 +261,136 @@ final class BrowserDetector
             ? BrowserType::NokiaS60
             : BrowserType::Nokia;
 
-        return [$type, $matches[2], false];
+        return new BrowserMatch($type, $matches[2]);
     }
 
-    private function checkGoogleBot(string $ua): ?array
+    private function checkGoogleBot(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'googlebot') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'googlebot'));
-        $version = str_replace(';', '', explode(' ', $parts[1])[0]);
+        $version = str_replace(';', '', $this->versionAfter($ua, 'googlebot'));
 
-        return [BrowserType::GoogleBot, $version, true];
+        return new BrowserMatch(BrowserType::GoogleBot, $version, true);
     }
 
-    private function checkMSNBot(string $ua): ?array
+    private function checkMSNBot(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'msnbot') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'msnbot'));
-        $version = str_replace(';', '', explode(' ', $parts[1])[0]);
+        $version = str_replace(';', '', $this->versionAfter($ua, 'msnbot'));
 
-        return [BrowserType::MSNBot, $version, true];
+        return new BrowserMatch(BrowserType::MSNBot, $version, true);
     }
 
-    private function checkSlurp(string $ua): ?array
+    private function checkSlurp(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'slurp') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Slurp'));
-        $version = explode(' ', $parts[1] ?? '')[0];
 
-        return [BrowserType::Slurp, $version, true];
+        return new BrowserMatch(BrowserType::Slurp, $this->versionAfter($ua, 'Slurp'), true);
     }
 
-    private function checkSafari(string $ua): ?array
+    private function checkSafari(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Safari') === false || stripos($ua, 'iPhone') !== false || stripos($ua, 'iPod') !== false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Version'));
-        $version = isset($parts[1]) ? explode(' ', $parts[1])[0] : 'unknown';
 
-        return [BrowserType::Safari, $version, false];
+        return new BrowserMatch(BrowserType::Safari, $this->versionAfter($ua, 'Version'));
     }
 
-    private function checkKonqueror(string $ua): ?array
+    private function checkKonqueror(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Konqueror') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Konqueror'));
-        $version = explode(' ', $parts[0])[0];
-        $versionParts = explode('/', $parts[0]);
-        $version = $versionParts[1] ?? 'unknown';
 
-        return [BrowserType::Konqueror, $version, false];
+        return new BrowserMatch(BrowserType::Konqueror, $this->versionAfter($ua, 'Konqueror'));
     }
 
-    private function checkICab(string $ua): ?array
+    private function checkICab(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'icab') === false) {
             return null;
         }
-        $parts = explode(' ', stristr(str_replace('/', ' ', $ua), 'icab'));
+        $parts = explode(' ', stristr(str_replace('/', ' ', $ua), 'icab') ?: '');
         $version = $parts[1] ?? 'unknown';
 
-        return [BrowserType::ICab, $version, false];
+        return new BrowserMatch(BrowserType::ICab, $version);
     }
 
-    private function checkAmaya(string $ua): ?array
+    private function checkAmaya(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'amaya') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Amaya'));
-        $version = explode(' ', $parts[1] ?? '')[0];
 
-        return [BrowserType::Amaya, $version, false];
+        return new BrowserMatch(BrowserType::Amaya, $this->versionAfter($ua, 'Amaya'));
     }
 
-    private function checkLynx(string $ua): ?array
+    private function checkLynx(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'lynx') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Lynx'));
-        $version = explode(' ', $parts[1] ?? '')[0];
 
-        return [BrowserType::Lynx, $version, false];
+        return new BrowserMatch(BrowserType::Lynx, $this->versionAfter($ua, 'Lynx'));
     }
 
-    private function checkShiretoko(string $ua): ?array
+    private function checkShiretoko(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Mozilla') === false || !preg_match('/Shiretoko\/([^ ]*)/i', $ua, $matches)) {
             return null;
         }
 
-        return [BrowserType::Shiretoko, $matches[1], false];
+        return new BrowserMatch(BrowserType::Shiretoko, $matches[1]);
     }
 
-    private function checkIceCat(string $ua): ?array
+    private function checkIceCat(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Mozilla') === false || !preg_match('/IceCat\/([^ ]*)/i', $ua, $matches)) {
             return null;
         }
 
-        return [BrowserType::IceCat, $matches[1], false];
+        return new BrowserMatch(BrowserType::IceCat, $matches[1]);
     }
 
-    private function checkIceweasel(string $ua): ?array
+    private function checkIceweasel(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'Iceweasel') === false) {
             return null;
         }
-        $parts = explode('/', stristr($ua, 'Iceweasel'));
-        $version = explode(' ', $parts[1] ?? '')[0];
 
-        return [BrowserType::Iceweasel, $version, false];
+        return new BrowserMatch(BrowserType::Iceweasel, $this->versionAfter($ua, 'Iceweasel'));
     }
 
-    private function checkW3CValidator(string $ua): ?array
+    private function checkW3CValidator(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'W3C-checklink') !== false) {
-            $parts = explode('/', stristr($ua, 'W3C-checklink'));
-            $version = explode(' ', $parts[1] ?? '')[0];
-
-            return [BrowserType::W3CValidator, $version, false];
+            return new BrowserMatch(BrowserType::W3CValidator, $this->versionAfter($ua, 'W3C-checklink'));
         }
         if (stripos($ua, 'W3C_Validator') !== false) {
             $fixed = str_replace('W3C_Validator ', 'W3C_Validator/', $ua);
-            $parts = explode('/', stristr($fixed, 'W3C_Validator'));
-            $version = explode(' ', $parts[1] ?? '')[0];
 
-            return [BrowserType::W3CValidator, $version, false];
+            return new BrowserMatch(BrowserType::W3CValidator, $this->versionAfter($fixed, 'W3C_Validator'));
         }
 
         return null;
     }
 
-    private function checkMozilla(string $ua): ?array
+    private function checkMozilla(string $ua): ?BrowserMatch
     {
         if (stripos($ua, 'mozilla') === false || stripos($ua, 'netscape') !== false) {
             return null;
         }
         if (preg_match('/rv:([0-9]+\.[0-9]+[a-b]?)/i', $ua, $matches)) {
-            return [BrowserType::Mozilla, $matches[1], false];
+            return new BrowserMatch(BrowserType::Mozilla, $matches[1]);
         }
         if (preg_match('/mozilla\/([^ ]*)/i', $ua, $matches)) {
-            return [BrowserType::Mozilla, $matches[1], false];
+            return new BrowserMatch(BrowserType::Mozilla, $matches[1]);
         }
 
         return null;
@@ -429,11 +404,7 @@ final class BrowserDetector
         if (preg_match('/FxiOS\/([^ ]+)/i', $ua, $matches)) {
             return $matches[1];
         }
-        $parts = explode('/', stristr($ua, 'Version'));
-        if (isset($parts[1])) {
-            return explode(' ', $parts[1])[0];
-        }
 
-        return 'unknown';
+        return $this->versionAfter($ua, 'Version');
     }
 }
