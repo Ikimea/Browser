@@ -44,4 +44,14 @@ enum BrowserType: string
     case DuckDuckGo = 'DuckDuckGo';
     case UCBrowser = 'UC Browser';
     case MiBrowser = 'Mi Browser';
+    case BingBot = 'BingBot';
+    case YandexBot = 'YandexBot';
+    case Applebot = 'Applebot';
+    case DuckDuckBot = 'DuckDuckBot';
+    case FacebookBot = 'FacebookBot';
+    case TwitterBot = 'TwitterBot';
+    case LinkedInBot = 'LinkedInBot';
+    case WhatsApp = 'WhatsApp';
+    case Telegram = 'Telegram';
+    case Discord = 'Discord';
 }

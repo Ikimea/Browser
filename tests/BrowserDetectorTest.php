@@ -214,6 +214,66 @@ final class BrowserDetectorTest extends TestCase
             BrowserType::MiBrowser,
             '17.',
         ];
+
+        yield 'BingBot' => [
+            'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
+            BrowserType::BingBot,
+            '2.0',
+        ];
+
+        yield 'YandexBot' => [
+            'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)',
+            BrowserType::YandexBot,
+            '3.0',
+        ];
+
+        yield 'Applebot' => [
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)',
+            BrowserType::Applebot,
+            '0.1',
+        ];
+
+        yield 'DuckDuckBot' => [
+            'DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)',
+            BrowserType::DuckDuckBot,
+            '1.1',
+        ];
+
+        yield 'FacebookBot (facebookexternalhit)' => [
+            'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+            BrowserType::FacebookBot,
+            '1.1',
+        ];
+
+        yield 'TwitterBot' => [
+            'Twitterbot/1.0',
+            BrowserType::TwitterBot,
+            '1.',
+        ];
+
+        yield 'LinkedInBot' => [
+            'LinkedInBot/1.0 (compatible; Mozilla/5.0; Apache-HttpClient +http://www.linkedin.com)',
+            BrowserType::LinkedInBot,
+            '1.',
+        ];
+
+        yield 'WhatsApp' => [
+            'WhatsApp/2.23.20.0 A',
+            BrowserType::WhatsApp,
+            '2.',
+        ];
+
+        yield 'TelegramBot' => [
+            'TelegramBot (like TwitterBot)',
+            BrowserType::Telegram,
+            '',
+        ];
+
+        yield 'DiscordBot' => [
+            'Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)',
+            BrowserType::Discord,
+            '2.',
+        ];
     }
 
     public function testIsRobot(): void

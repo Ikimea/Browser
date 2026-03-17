@@ -6,7 +6,22 @@ final class BrowserDetector
 {
     public function detect(string $userAgent): BrowserMatch
     {
-        return $this->checkYandex($userAgent)
+        return // bots first (their UA often contains browser tokens)
+            $this->checkGoogleBot($userAgent)
+            ?? $this->checkMSNBot($userAgent)
+            ?? $this->checkBingBot($userAgent)
+            ?? $this->checkYandexBot($userAgent)
+            ?? $this->checkApplebot($userAgent)
+            ?? $this->checkDuckDuckBot($userAgent)
+            ?? $this->checkFacebookBot($userAgent)
+            ?? $this->checkTelegram($userAgent)
+            ?? $this->checkTwitterBot($userAgent)
+            ?? $this->checkLinkedInBot($userAgent)
+            ?? $this->checkWhatsApp($userAgent)
+            ?? $this->checkDiscord($userAgent)
+            ?? $this->checkSlurp($userAgent)
+            // browsers
+            ?? $this->checkYandex($userAgent)
             ?? $this->checkEdge($userAgent)
             ?? $this->checkIE($userAgent)
             ?? $this->checkOperaMini($userAgent)
@@ -29,9 +44,6 @@ final class BrowserDetector
             ?? $this->checkiPhone($userAgent)
             ?? $this->checkBlackBerry($userAgent)
             ?? $this->checkNokia($userAgent)
-            ?? $this->checkGoogleBot($userAgent)
-            ?? $this->checkMSNBot($userAgent)
-            ?? $this->checkSlurp($userAgent)
             ?? $this->checkSafari($userAgent)
             ?? $this->checkKonqueror($userAgent)
             ?? $this->checkICab($userAgent)
@@ -351,6 +363,106 @@ final class BrowserDetector
         }
 
         return new BrowserMatch(BrowserType::Slurp, $this->versionAfter($ua, 'Slurp'), true);
+    }
+
+    private function checkBingBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'bingbot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'bingbot'));
+
+        return new BrowserMatch(BrowserType::BingBot, $version, true);
+    }
+
+    private function checkYandexBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'YandexBot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'YandexBot'));
+
+        return new BrowserMatch(BrowserType::YandexBot, $version, true);
+    }
+
+    private function checkApplebot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'Applebot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'Applebot'));
+
+        return new BrowserMatch(BrowserType::Applebot, $version, true);
+    }
+
+    private function checkDuckDuckBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'DuckDuckBot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'DuckDuckBot'));
+
+        return new BrowserMatch(BrowserType::DuckDuckBot, $version, true);
+    }
+
+    private function checkFacebookBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'facebookexternalhit') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'facebookexternalhit'));
+
+        return new BrowserMatch(BrowserType::FacebookBot, $version, true);
+    }
+
+    private function checkTwitterBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'Twitterbot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'Twitterbot'));
+
+        return new BrowserMatch(BrowserType::TwitterBot, $version, true);
+    }
+
+    private function checkLinkedInBot(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'LinkedInBot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'LinkedInBot'));
+
+        return new BrowserMatch(BrowserType::LinkedInBot, $version, true);
+    }
+
+    private function checkWhatsApp(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'WhatsApp') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'WhatsApp'));
+
+        return new BrowserMatch(BrowserType::WhatsApp, $version, true);
+    }
+
+    private function checkTelegram(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'TelegramBot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'TelegramBot'));
+
+        return new BrowserMatch(BrowserType::Telegram, $version, true);
+    }
+
+    private function checkDiscord(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'Discordbot') === false) {
+            return null;
+        }
+        $version = str_replace(';', '', $this->versionAfter($ua, 'Discordbot'));
+
+        return new BrowserMatch(BrowserType::Discord, $version, true);
     }
 
     private function checkSafari(string $ua): ?BrowserMatch
