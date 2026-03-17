@@ -14,6 +14,12 @@ final class BrowserDetector
             ?? $this->checkOPR($userAgent)
             ?? $this->checkNetscapeNavigator($userAgent)
             ?? $this->checkFirefox($userAgent)
+            ?? $this->checkBrave($userAgent)
+            ?? $this->checkVivaldi($userAgent)
+            ?? $this->checkSamsungInternet($userAgent)
+            ?? $this->checkDuckDuckGo($userAgent)
+            ?? $this->checkUCBrowser($userAgent)
+            ?? $this->checkMiBrowser($userAgent)
             ?? $this->checkChrome($userAgent)
             ?? $this->checkOmniWeb($userAgent)
             ?? $this->checkFacebook($userAgent)
@@ -175,6 +181,60 @@ final class BrowserDetector
         }
 
         return null;
+    }
+
+    private function checkBrave(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'Brave') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::Brave, $this->versionAfter($ua, 'Brave'));
+    }
+
+    private function checkVivaldi(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'Vivaldi') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::Vivaldi, $this->versionAfter($ua, 'Vivaldi'));
+    }
+
+    private function checkSamsungInternet(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'SamsungBrowser') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::SamsungInternet, $this->versionAfter($ua, 'SamsungBrowser'));
+    }
+
+    private function checkDuckDuckGo(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'DuckDuckGo') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::DuckDuckGo, $this->versionAfter($ua, 'DuckDuckGo'));
+    }
+
+    private function checkUCBrowser(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'UCBrowser') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::UCBrowser, $this->versionAfter($ua, 'UCBrowser'));
+    }
+
+    private function checkMiBrowser(string $ua): ?BrowserMatch
+    {
+        if (stripos($ua, 'MiuiBrowser') === false) {
+            return null;
+        }
+
+        return new BrowserMatch(BrowserType::MiBrowser, $this->versionAfter($ua, 'MiuiBrowser'));
     }
 
     private function checkChrome(string $ua): ?BrowserMatch

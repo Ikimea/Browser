@@ -178,6 +178,42 @@ final class BrowserDetectorTest extends TestCase
             BrowserType::Mozilla,
             '',
         ];
+
+        yield 'Brave' => [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Brave/120.0.0.0',
+            BrowserType::Brave,
+            '120.',
+        ];
+
+        yield 'Vivaldi' => [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Vivaldi/6.5.3206.63',
+            BrowserType::Vivaldi,
+            '6.',
+        ];
+
+        yield 'Samsung Internet' => [
+            'Mozilla/5.0 (Linux; Android 13; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/23.0 Chrome/115.0.0.0 Mobile Safari/537.36',
+            BrowserType::SamsungInternet,
+            '23.',
+        ];
+
+        yield 'DuckDuckGo' => [
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) DuckDuckGo/7 Safari/605.1.15',
+            BrowserType::DuckDuckGo,
+            '7',
+        ];
+
+        yield 'UC Browser' => [
+            'Mozilla/5.0 (Linux; U; Android 13; en-US; Pixel 7 Build/TP1A) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/100.0.0.0 UCBrowser/16.0.2.4 Mobile Safari/537.36',
+            BrowserType::UCBrowser,
+            '16.',
+        ];
+
+        yield 'Mi Browser' => [
+            'Mozilla/5.0 (Linux; U; Android 12; en-US; M2101K6G Build/SKQ1.211006.001) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/100.0.0.0 MiuiBrowser/17.0.2 Mobile Safari/537.36',
+            BrowserType::MiBrowser,
+            '17.',
+        ];
     }
 
     public function testIsRobot(): void

@@ -38,4 +38,10 @@ enum BrowserType: string
     case MSN = 'MSN Browser';
     case NetscapeNavigator = 'Netscape Navigator';
     case Facebook = 'Facebook';
+    case Brave = 'Brave';
+    case Vivaldi = 'Vivaldi';
+    case SamsungInternet = 'Samsung Internet';
+    case DuckDuckGo = 'DuckDuckGo';
+    case UCBrowser = 'UC Browser';
+    case MiBrowser = 'Mi Browser';
 }
